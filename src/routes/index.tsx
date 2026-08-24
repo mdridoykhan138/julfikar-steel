@@ -6,6 +6,9 @@ import { About } from "@/components/site/About";
 import { Products } from "@/components/site/Products";
 import { Process } from "@/components/site/Process";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { Preloader } from "@/components/site/Preloader";
+import videoAsset from "@/assets/zulfiqar-steel.mp4.asset.json";
+import { useHeroPreload } from "@/lib/use-hero-preload";
 import { initReveals } from "@/lib/reveal";
 
 const TITLE = "Julfikar Steel Re-Rolling Mills Ltd. — Forged for Strength";
@@ -28,6 +31,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const mainRef = useRef<HTMLElement>(null);
+  const preload = useHeroPreload(videoAsset.url);
 
   useEffect(() => {
     if (!mainRef.current) return;
@@ -37,9 +41,21 @@ function Index() {
 
   return (
     <>
+      {preload.loading ? (
+        <Preloader
+          progress={preload.progress}
+          complete={preload.complete}
+          onExit={preload.onLoaderExit}
+        />
+      ) : null}
       <SiteHeader />
       <main ref={mainRef} className="bg-background">
-        <Hero />
+        <Hero
+          videoSrc={preload.videoSrc}
+          active={!preload.loading}
+          preloadFailed={preload.failed}
+          onReady={preload.onHeroReady}
+        />
         <About />
         <Products />
         <Process />
@@ -48,3 +64,4 @@ function Index() {
     </>
   );
 }
+

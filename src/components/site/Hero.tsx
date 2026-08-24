@@ -1,36 +1,66 @@
 import { useEffect, useRef, useState } from "react";
-import videoAsset from "@/assets/zulfiqar-steel.mp4.asset.json";
 import posterAsset from "@/assets/hero-poster.jpg.asset.json";
 import { createHeroCanvas, type HeroCanvasHandle } from "@/lib/hero-canvas";
+import { whenSeekable } from "@/lib/preload-video";
 import { prefersReducedMotion, useGsap } from "@/lib/reveal";
 
-export function Hero() {
+type Props = {
+  /** Fully downloaded object URL; null while the loader is still working. */
+  videoSrc: string | null;
+  /** True once the loading screen has left — starts the intro timeline. */
+  active: boolean;
+  /** Preload failed: skip the canvas entirely and show the poster. */
+  preloadFailed?: boolean;
+  /** Called when the footage can be scrubbed reliably. */
+  onReady: () => void;
+};
+
+export function Hero({ videoSrc, active, preloadFailed = false, onReady }: Props) {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
+  const readyRef = useRef(false);
 
+  const showPoster = failed || preloadFailed;
+
+  // Report readiness (or failure) so the loader can leave.
+  useEffect(() => {
+    if (readyRef.current) return;
+    if (preloadFailed) {
+      readyRef.current = true;
+      onReady();
+      return;
+    }
+    const video = videoRef.current;
+    if (!videoSrc || !video) return;
+    let cancelled = false;
+    whenSeekable(video).then((ok) => {
+      if (cancelled || readyRef.current) return;
+      readyRef.current = true;
+      if (!ok) setFailed(true);
+      onReady();
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [videoSrc, preloadFailed, onReady]);
+
+  // Scrub engine + scroll-linked stage push-in.
   useEffect(() => {
     const section = sectionRef.current;
     const canvas = canvasRef.current;
     const video = videoRef.current;
     const stage = stageRef.current;
-    if (!section || !canvas || !video || !stage) return;
+    if (!section || !stage) return;
+    if (!videoSrc || !canvas || !video) return;
 
     const { gsap, ScrollTrigger } = useGsap();
     const reduced = prefersReducedMotion();
-    let engine: HeroCanvasHandle | null = null;
 
-    // Upgrade preload once the page is interactive, then decode the first frame.
-    const startLoad = () => {
-      video.preload = "auto";
-      video.load();
-    };
-    const loadTimer = window.setTimeout(startLoad, 300);
-
-    engine = createHeroCanvas({
+    const engine: HeroCanvasHandle = createHeroCanvas({
       canvas,
       video,
       reducedMotion: reduced,
@@ -38,12 +68,12 @@ export function Hero() {
     });
 
     const ctx = gsap.context(() => {
-      const scrub = ScrollTrigger.create({
+      ScrollTrigger.create({
         trigger: section,
         start: "top top",
         end: "bottom bottom",
         scrub: true,
-        onUpdate: (self) => engine?.setProgress(self.progress),
+        onUpdate: (self) => engine.setProgress(self.progress),
       });
 
       if (!reduced) {
@@ -74,39 +104,47 @@ export function Hero() {
             scrub: true,
           },
         });
-
-        const tl = gsap.timeline({ delay: 0.25 });
-        tl.from("[data-hero-eyebrow]", { y: 20, opacity: 0, duration: 0.8, ease: "power3.out" })
-          .from(
-            "[data-hero-line]",
-            {
-              yPercent: 110,
-              duration: 1.1,
-              ease: "power4.out",
-              stagger: 0.12,
-            },
-            "-=0.4",
-          )
-          .from("[data-hero-sub]", { y: 20, opacity: 0, duration: 0.8 }, "-=0.55")
-          .from("[data-hero-cta]", { y: 20, opacity: 0, duration: 0.8 }, "-=0.5")
-          .from("[data-hero-scroll]", { opacity: 0, duration: 0.8 }, "-=0.4");
       }
-
-      return () => scrub.kill();
     }, section);
 
+    ScrollTrigger.refresh();
+
     return () => {
-      window.clearTimeout(loadTimer);
       ctx.revert();
-      engine?.destroy();
+      engine.destroy();
     };
-  }, []);
+  }, [videoSrc]);
+
+  // Intro reveal — only after the loading screen is gone.
+  useEffect(() => {
+    if (!active) return;
+    const section = sectionRef.current;
+    if (!section) return;
+    if (prefersReducedMotion()) return;
+
+    const { gsap, ScrollTrigger } = useGsap();
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline();
+      tl.from("[data-hero-eyebrow]", { y: 20, opacity: 0, duration: 0.8, ease: "power3.out" })
+        .from(
+          "[data-hero-line]",
+          { yPercent: 110, duration: 1.1, ease: "power4.out", stagger: 0.12 },
+          "-=0.4",
+        )
+        .from("[data-hero-sub]", { y: 20, opacity: 0, duration: 0.8 }, "-=0.55")
+        .from("[data-hero-cta]", { y: 20, opacity: 0, duration: 0.8 }, "-=0.5")
+        .from("[data-hero-scroll]", { opacity: 0, duration: 0.8 }, "-=0.4");
+    }, section);
+
+    ScrollTrigger.refresh();
+    return () => ctx.revert();
+  }, [active]);
 
   return (
     <section id="home" ref={sectionRef} className="relative h-[360vh] w-full">
       <div className="sticky top-0 h-dvh w-full overflow-hidden bg-[#040405]">
         <div ref={stageRef} className="absolute inset-0 will-change-transform">
-          {failed ? (
+          {showPoster ? (
             <div
               className="hero-fallback"
               style={{ backgroundImage: `url(${posterAsset.url})` }}
@@ -117,18 +155,20 @@ export function Hero() {
           )}
         </div>
 
-        <video
-          ref={videoRef}
-          src={videoAsset.url}
-          poster={posterAsset.url}
-          preload="metadata"
-          muted
-          playsInline
-          crossOrigin="anonymous"
-          className="pointer-events-none absolute h-px w-px opacity-0"
-          aria-hidden="true"
-          tabIndex={-1}
-        />
+        {videoSrc && !preloadFailed ? (
+          <video
+            ref={videoRef}
+            src={videoSrc}
+            poster={posterAsset.url}
+            preload="auto"
+            muted
+            playsInline
+            className="pointer-events-none absolute h-px w-px opacity-0"
+            aria-hidden="true"
+            tabIndex={-1}
+          />
+        ) : null}
+
 
         {/* legibility scrims — no extra visual effects on the footage itself */}
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(4,4,5,0.92),rgba(4,4,5,0.15)_45%,rgba(4,4,5,0.6))]" />
