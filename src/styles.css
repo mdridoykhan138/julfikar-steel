@@ -309,3 +309,109 @@
     transition: none !important;
   }
 }
+
+/* Preloader */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  background: #040405;
+  clip-path: inset(0 0 0 0);
+  overflow: hidden;
+  --heat: 0;
+}
+
+.loader-heat {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(80vw, 46rem);
+  height: min(80vw, 46rem);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 138, 46, 0.16) 0%,
+    rgba(255, 88, 20, 0.06) 40%,
+    transparent 70%
+  );
+  opacity: var(--heat);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.loader-mark {
+  --fill: 0%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.loader-mark-title {
+  font-size: clamp(2.4rem, 9vw, 7rem);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  background-image: linear-gradient(
+    to top,
+    #ffb266 0%,
+    #ff7a18 calc(var(--fill) * 0.45),
+    #f6f5f5 var(--fill),
+    rgba(246, 245, 245, 0.14) var(--fill),
+    rgba(246, 245, 245, 0.14) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.loader-mark-sub {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.42em;
+  color: var(--steel-dim);
+}
+
+.loader-meter {
+  margin-top: clamp(2rem, 6vh, 3.5rem);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.loader-meter-track {
+  position: relative;
+  display: block;
+  height: 1px;
+  flex: 1;
+  background: rgba(246, 245, 245, 0.12);
+}
+
+.loader-meter-fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(to right, rgba(246, 245, 245, 0.5), #ff7a18);
+}
+
+.loader-meter-count {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.loader-note {
+  margin-top: 1.25rem;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  color: var(--steel-dim);
+}
+
+.loading-lock {
+  overflow: hidden;
+}
