@@ -3,19 +3,19 @@
  * Framework-free scroll-scrubbed video → canvas engine.
  *
  * A hidden <video> is never played. Its currentTime is driven directly from
- * ScrollTrigger progress, so scrolling down advances the forge sequence and
- * scrolling up reverses it. A single requestAnimationFrame loop performs the
- * seeking (eased) and paints the cover-fitted frame onto the canvas.
+ * scroll progress, so scrolling down advances the forge sequence and scrolling
+ * up reverses it. A single requestAnimationFrame loop performs the seeking
+ * (eased) and paints the cover-fitted frame onto the canvas.
  */
 
 export type HeroCanvasHandle = {
+  setProgress: (progress: number) => void;
   destroy: () => void;
 };
 
 type InitOptions = {
   canvas: HTMLCanvasElement;
   video: HTMLVideoElement;
-  onProgress?: (progress: number) => void;
   onFailure?: () => void;
   reducedMotion?: boolean;
 };
@@ -23,18 +23,17 @@ type InitOptions = {
 export function createHeroCanvas({
   canvas,
   video,
-  onProgress,
   onFailure,
   reducedMotion = false,
 }: InitOptions): HeroCanvasHandle {
   const ctx = canvas.getContext("2d", { alpha: false });
   let rafId = 0;
+  let resizeRaf = 0;
   let disposed = false;
   let targetTime = 0;
   let renderedTime = -1;
   let seeking = false;
   let ready = false;
-  let resizeRaf = 0;
 
   const measure = () => {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -46,28 +45,20 @@ export function createHeroCanvas({
       canvas.width = nextW;
       canvas.height = nextH;
     }
-    renderedTime = -1; // force a repaint after resize
+    renderedTime = -1;
   };
 
   const paint = () => {
-    if (!ctx || !video.videoWidth) return;
+    if (!ctx) return;
     const cw = canvas.width;
     const ch = canvas.height;
-    const vw = video.videoWidth;
-    const vh = video.videoHeight;
-    // object-fit: cover
-    const scale = Math.max(cw / vw, ch / vh);
-    const dw = vw * scale;
-    const dh = vh * scale;
-    const dx = (cw - dw) / 2;
-    const dy = (ch - dh) / 2;
     ctx.fillStyle = "#040405";
     ctx.fillRect(0, 0, cw, ch);
-    try {
-      ctx.drawImage(video, dx, dy, dw, dh);
-    } catch {
-      /* frame not decodable yet */
-    }
+    if (!video.videoWidth) return;
+    const scale = Math.max(cw / video.videoWidth, ch / video.videoHeight);
+    const dw = video.videoWidth * scale;
+    const dh = video.videoHeight * scale;
+    ctx.drawImage(video, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
   };
 
   const tick = () => {
@@ -82,8 +73,7 @@ export function createHeroCanvas({
     const delta = targetTime - current;
 
     if (!seeking && Math.abs(delta) > 0.016) {
-      // ease toward the target so fast scrolls don't thrash the decoder
-      const next = reducedMotion ? targetTime : current + delta * 0.35;
+      const next = reducedMotion ? targetTime : current + delta * 0.4;
       seeking = true;
       try {
         video.currentTime = Math.max(0, Math.min(duration - 0.02, next));
@@ -94,7 +84,11 @@ export function createHeroCanvas({
 
     if (video.currentTime !== renderedTime) {
       renderedTime = video.currentTime;
-      paint();
+      try {
+        paint();
+      } catch {
+        /* frame not decodable yet */
+      }
     }
   };
 
@@ -106,14 +100,22 @@ export function createHeroCanvas({
   const handleReady = () => {
     ready = true;
     measure();
-    paint();
+    try {
+      paint();
+    } catch {
+      /* noop */
+    }
   };
 
   const handleResize = () => {
     cancelAnimationFrame(resizeRaf);
     resizeRaf = requestAnimationFrame(() => {
       measure();
-      paint();
+      try {
+        paint();
+      } catch {
+        /* noop */
+      }
     });
   };
 
@@ -133,6 +135,10 @@ export function createHeroCanvas({
   rafId = requestAnimationFrame(tick);
 
   return {
+    setProgress: (progress: number) => {
+      const duration = video.duration || 0;
+      targetTime = Math.max(0, Math.min(duration, progress * duration));
+    },
     destroy: () => {
       disposed = true;
       cancelAnimationFrame(rafId);
@@ -144,29 +150,4 @@ export function createHeroCanvas({
       window.removeEventListener("orientationchange", handleResize);
     },
   };
-
-  // exposed through closure below
-  function setProgress(progress: number) {
-    const duration = video.duration || 0;
-    targetTime = Math.max(0, Math.min(duration, progress * duration));
-    onProgress?.(progress);
-  }
-  // keep TS aware the helper is used via the returned setter
-  // eslint-disable-next-line no-unreachable
-  void setProgress;
-}
-
-/**
- * Simpler explicit API: returns both the destroy handle and a progress setter.
- */
-export function mountHeroCanvas(options: InitOptions) {
-  const state = { target: 0 };
-  const handle = createHeroCanvas({
-    ...options,
-    onProgress: (p) => {
-      state.target = p;
-      options.onProgress?.(p);
-    },
-  });
-  return handle;
 }
