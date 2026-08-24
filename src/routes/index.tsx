@@ -6,6 +6,9 @@ import { About } from "@/components/site/About";
 import { Products } from "@/components/site/Products";
 import { Process } from "@/components/site/Process";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { Preloader } from "@/components/site/Preloader";
+import videoAsset from "@/assets/zulfiqar-steel.mp4.asset.json";
+import { useHeroPreload } from "@/lib/use-hero-preload";
 import { initReveals } from "@/lib/reveal";
 
 const TITLE = "Julfikar Steel Re-Rolling Mills Ltd. — Forged for Strength";
