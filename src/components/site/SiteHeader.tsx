@@ -73,7 +73,7 @@ export function SiteHeader() {
 
   return (
     <header ref={headerRef} className="site-header" data-scrolled={scrolled}>
-      <div className="shell flex items-center justify-between gap-6">
+      <div className="shell relative z-[70] flex items-center justify-between gap-6">
         <a href="#home" data-header-item className="flex flex-col leading-none">
           <span className="display text-[clamp(0.95rem,1.5vw,1.25rem)] tracking-[0.06em]">
             Julfikar Steel
