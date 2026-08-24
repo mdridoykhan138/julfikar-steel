@@ -151,7 +151,7 @@ export function Hero() {
                   Strength.
                 </span>
               </span>
-              <span className="block overflow-hidden text-[color:var(--steel)]">
+              <span className="block overflow-hidden text-[clamp(1.5rem,4.4vw,4rem)] text-[color:var(--steel)]">
                 <span className="block" data-hero-line>
                   Engineered to endure.
                 </span>

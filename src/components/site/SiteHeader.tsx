@@ -78,7 +78,7 @@ export function SiteHeader() {
           <span className="display text-[clamp(0.95rem,1.5vw,1.25rem)] tracking-[0.06em]">
             Julfikar Steel
           </span>
-          <span className="mt-1 text-[0.55rem] uppercase tracking-[0.36em] text-[color:var(--steel-dim)]">
+          <span className="mt-1 whitespace-nowrap text-[0.5rem] uppercase tracking-[0.3em] text-[color:var(--steel-dim)] sm:text-[0.55rem] sm:tracking-[0.36em]">
             Re-Rolling Mills Ltd.
           </span>
         </a>
@@ -92,9 +92,11 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a href="#contact" className="btn-solid hidden md:inline-flex" data-header-item>
-            Get in Touch
-          </a>
+          <div className="hidden md:block" data-header-item>
+            <a href="#contact" className="btn-solid">
+              Get in Touch
+            </a>
+          </div>
           <button
             type="button"
             aria-label={open ? "Close menu" : "Open menu"}
