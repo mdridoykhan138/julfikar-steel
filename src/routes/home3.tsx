@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import { Hero } from "@/components/site/Hero";
+import { HeroVideo } from "@/components/site/HeroVideo";
 import { About } from "@/components/site/About";
 import { Products } from "@/components/site/Products";
 import { Process } from "@/components/site/Process";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ScrollToTop } from "@/components/site/ScrollToTop";
 import { Preloader } from "@/components/site/Preloader";
-import videoSrc from "@/assets/video/zulfiqar-steel.mp4";
+import videoSrc from "@/assets/video/zulfiqar-steel2.mp4";
 import { useHeroPreload } from "@/lib/use-hero-preload";
 import { initReveals } from "@/lib/reveal";
 
@@ -16,7 +16,7 @@ const TITLE = "Julfikar Steel Re-Rolling Mills Ltd. — Forged for Strength";
 const DESCRIPTION =
   "Julfikar Steel Re-Rolling Mills Ltd. manufactures high tensile reinforcement, structural and industrial steel — rolled to specification with documented quality control.";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/home3")({
   head: () => ({
     meta: [
       { title: TITLE },
@@ -27,10 +27,10 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Index,
+  component: Home3,
 });
 
-function Index() {
+function Home3() {
   const mainRef = useRef<HTMLElement>(null);
   const preload = useHeroPreload(videoSrc);
 
@@ -51,7 +51,7 @@ function Index() {
       ) : null}
       <SiteHeader />
       <main ref={mainRef} className="bg-background">
-        <Hero
+        <HeroVideo
           videoSrc={preload.videoSrc}
           active={!preload.loading}
           preloadFailed={preload.failed}

@@ -3,7 +3,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 let registered = false;
 
-export function useGsap() {
+export function getGsap() {
   if (!registered && typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
     registered = true;
@@ -21,7 +21,7 @@ export function prefersReducedMotion() {
  * inside `root`. Elements may set data-reveal="mask" for a clip reveal.
  */
 export function initReveals(root: HTMLElement) {
-  const { gsap, ScrollTrigger } = useGsap();
+  const { gsap, ScrollTrigger } = getGsap();
   const reduced = prefersReducedMotion();
   const items = Array.from(root.querySelectorAll<HTMLElement>("[data-reveal]"));
 
@@ -80,8 +80,6 @@ export function initReveals(root: HTMLElement) {
         }
         return;
       }
-
-
 
       gsap.fromTo(
         el,

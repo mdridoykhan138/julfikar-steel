@@ -1,8 +1,26 @@
 import { useEffect, useRef, useState } from "react";
-import { prefersReducedMotion, useGsap } from "@/lib/reveal";
+import { Link } from "@tanstack/react-router";
+import { ChevronDown } from "lucide-react";
+import logo from "@/assets/logo/julfikar-logo.png";
+import { prefersReducedMotion, getGsap } from "@/lib/reveal";
 
-const NAV = [
-  { label: "Home", href: "#home" },
+type NavItem = {
+  label: string;
+  href?: string;
+  to?: string;
+  children?: { label: string; to: string }[];
+};
+
+const NAV: NavItem[] = [
+  {
+    label: "Home",
+    to: "/",
+    children: [
+      { label: "Home", to: "/" },
+      { label: "Home2", to: "/home2" },
+      { label: "Home3", to: "/home3" },
+    ],
+  },
   { label: "About", href: "#about" },
   { label: "Products", href: "#products" },
   { label: "Manufacturing", href: "#manufacturing" },
@@ -19,14 +37,11 @@ export function SiteHeader() {
   useEffect(() => {
     const el = headerRef.current;
     if (!el) return;
-    const { gsap, ScrollTrigger } = useGsap();
+    const { gsap } = getGsap();
 
-    const st = ScrollTrigger.create({
-      start: 40,
-      onUpdate: (self) => setScrolled(self.scroll() > 40),
-      onToggle: (self) => setScrolled(self.isActive),
-    });
-    setScrolled(window.scrollY > 40);
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     let ctx: gsap.Context | undefined;
     if (!prefersReducedMotion()) {
@@ -43,14 +58,14 @@ export function SiteHeader() {
     }
 
     return () => {
-      st.kill();
+      window.removeEventListener("scroll", onScroll);
       ctx?.revert();
     };
   }, []);
 
   useEffect(() => {
     if (!open || !panelRef.current) return;
-    const { gsap } = useGsap();
+    const { gsap } = getGsap();
     if (prefersReducedMotion()) return;
     const ctx = gsap.context(() => {
       gsap.from("[data-mobile-link]", {
@@ -74,21 +89,48 @@ export function SiteHeader() {
   return (
     <header ref={headerRef} className="site-header" data-scrolled={scrolled}>
       <div className="shell relative z-[70] flex items-center justify-between gap-6">
-        <a href="#home" data-header-item className="flex flex-col leading-none">
-          <span className="display text-[clamp(0.95rem,1.5vw,1.25rem)] tracking-[0.06em]">
-            Julfikar Steel
-          </span>
-          <span className="mt-1 whitespace-nowrap text-[0.5rem] uppercase tracking-[0.3em] text-[color:var(--steel-dim)] sm:text-[0.55rem] sm:tracking-[0.36em]">
-            Re-Rolling Mills Ltd.
-          </span>
-        </a>
+        <Link to="/" data-header-item className="flex items-center">
+          <img
+            src={logo}
+            alt="Julfikar Steel Re-Rolling Mills Ltd."
+            className="h-auto max-w-[160px]"
+          />
+        </Link>
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
-          {NAV.map((item) => (
-            <a key={item.label} href={item.href} className="nav-link" data-header-item>
-              {item.label}
-            </a>
-          ))}
+          {NAV.map((item) => {
+            if (item.children) {
+              return (
+                <div key={item.label} className="group relative" data-header-item>
+                  <Link to={item.to ?? "/"} className="nav-link inline-flex items-center gap-1.5">
+                    {item.label}
+                    <ChevronDown className="h-3 w-3 transition-transform duration-300 group-hover:rotate-180" />
+                  </Link>
+                  <div className="nav-submenu">
+                    <div className="nav-submenu-panel">
+                      {item.children.map((child) => (
+                        <Link key={child.label} to={child.to} className="nav-submenu-link">
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+            if (item.to) {
+              return (
+                <Link key={item.label} to={item.to} className="nav-link" data-header-item>
+                  {item.label}
+                </Link>
+              );
+            }
+            return (
+              <a key={item.label} href={item.href} className="nav-link" data-header-item>
+                {item.label}
+              </a>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -123,17 +165,54 @@ export function SiteHeader() {
           className="fixed inset-0 top-0 z-50 flex h-dvh flex-col justify-between bg-[#040405] px-6 pb-10 pt-28 lg:hidden"
         >
           <nav className="flex flex-col" aria-label="Mobile">
-            {NAV.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                data-mobile-link
-                onClick={() => setOpen(false)}
-                className="display border-b border-[color:var(--border)] py-5 text-[2rem]"
-              >
-                {item.label}
-              </a>
-            ))}
+            {NAV.map((item) => {
+              if (item.children) {
+                return (
+                  <div key={item.label} className="border-b border-[color:var(--border)] py-5">
+                    <p className="text-[0.6rem] uppercase tracking-[0.4em] text-[color:var(--steel-dim)]">
+                      {item.label}
+                    </p>
+                    <div className="mt-3 flex flex-col">
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.label}
+                          to={child.to}
+                          data-mobile-link
+                          onClick={() => setOpen(false)}
+                          className="display py-2 text-[1.5rem]"
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+              if (item.to) {
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.to}
+                    data-mobile-link
+                    onClick={() => setOpen(false)}
+                    className="display border-b border-[color:var(--border)] py-5 text-[2rem]"
+                  >
+                    {item.label}
+                  </Link>
+                );
+              }
+              return (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  data-mobile-link
+                  onClick={() => setOpen(false)}
+                  className="display border-b border-[color:var(--border)] py-5 text-[2rem]"
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </nav>
           <a href="#contact" className="btn-solid justify-center" onClick={() => setOpen(false)}>
             Get in Touch

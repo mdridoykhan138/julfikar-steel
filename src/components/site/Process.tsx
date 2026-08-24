@@ -1,13 +1,33 @@
 import { useEffect, useRef } from "react";
 import millLine from "@/assets/mill-line.jpg";
-import { prefersReducedMotion, useGsap } from "@/lib/reveal";
+import { prefersReducedMotion, getGsap } from "@/lib/reveal";
 
 const STEPS = [
-  { n: "01", title: "Raw Material", copy: "Billet sourced and verified for chemistry before it enters the furnace." },
-  { n: "02", title: "Processing", copy: "Reheating under controlled temperature for uniform grain structure." },
-  { n: "03", title: "Rolling", copy: "Sequential stands reduce section to exact dimensional tolerance." },
-  { n: "04", title: "Quality Control", copy: "Tensile, bend and dimensional testing on sampled production." },
-  { n: "05", title: "Finished Steel", copy: "Cut, bundled, tagged and dispatched with mill test certification." },
+  {
+    n: "01",
+    title: "Raw Material",
+    copy: "Billet sourced and verified for chemistry before it enters the furnace.",
+  },
+  {
+    n: "02",
+    title: "Processing",
+    copy: "Reheating under controlled temperature for uniform grain structure.",
+  },
+  {
+    n: "03",
+    title: "Rolling",
+    copy: "Sequential stands reduce section to exact dimensional tolerance.",
+  },
+  {
+    n: "04",
+    title: "Quality Control",
+    copy: "Tensile, bend and dimensional testing on sampled production.",
+  },
+  {
+    n: "05",
+    title: "Finished Steel",
+    copy: "Cut, bundled, tagged and dispatched with mill test certification.",
+  },
 ];
 
 export function Process() {
@@ -18,7 +38,7 @@ export function Process() {
     const root = rootRef.current;
     const line = lineRef.current;
     if (!root || !line || prefersReducedMotion()) return;
-    const { gsap } = useGsap();
+    const { gsap } = getGsap();
     const ctx = gsap.context(() => {
       gsap.fromTo(
         line,
@@ -40,7 +60,7 @@ export function Process() {
       className="relative border-t border-[color:var(--border)] py-[clamp(6rem,16vh,12rem)]"
     >
       <div className="shell">
-        <div className="flex items-baseline gap-6">
+        <div className="flex items-center gap-4">
           <span className="eyebrow">Section 03 — Manufacturing &amp; Quality</span>
           <span className="rule hidden flex-1 md:block" />
         </div>
@@ -51,12 +71,15 @@ export function Process() {
             <br />
             every ton.
           </h2>
-          <p className="text-sm leading-relaxed text-[color:var(--steel)] lg:col-span-4" data-reveal>
+          <p
+            className="text-xl leading-relaxed text-[color:var(--steel)] lg:col-span-4"
+            data-reveal
+          >
             Advanced rolling equipment, instrumented process control and documented inspection keep
             output consistent — batch to batch, shipment to shipment.
           </p>
           <p
-            className="text-sm leading-relaxed text-[color:var(--steel-dim)] lg:col-span-2"
+            className="text-xl leading-relaxed text-[color:var(--steel-dim)] lg:col-span-2"
             data-reveal
             data-reveal-delay="0.1"
           >
@@ -91,11 +114,13 @@ export function Process() {
           <div className="grid gap-px md:grid-cols-5" data-stagger>
             {STEPS.map((s) => (
               <div key={s.n} className="pt-8 md:pr-6">
-                <span className="text-[0.65rem] tracking-[0.4em] text-[color:var(--steel-dim)]">
+                <span className="text-[12px] tracking-[0.4em] text-[color:var(--brand)]">
                   {s.n}
                 </span>
                 <h3 className="display mt-4 text-[clamp(1.15rem,1.6vw,1.5rem)]">{s.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-[color:var(--steel-dim)]">{s.copy}</p>
+                <p className="mt-3 text-xl leading-relaxed text-[color:var(--steel-dim)]">
+                  {s.copy}
+                </p>
               </div>
             ))}
           </div>

@@ -33,7 +33,7 @@ export function Products() {
       className="relative border-t border-[color:var(--border)] bg-[#08080a] py-[clamp(6rem,16vh,12rem)]"
     >
       <div className="shell">
-        <div className="flex items-baseline gap-6">
+        <div className="flex items-center gap-4">
           <span className="eyebrow">Section 02 — Products</span>
           <span className="rule hidden flex-1 md:block" />
         </div>
@@ -45,7 +45,7 @@ export function Products() {
             performs.
           </h2>
           <p
-            className="text-sm leading-relaxed text-[color:var(--steel)] lg:col-span-5"
+            className="text-xl leading-relaxed text-[color:var(--steel)] lg:col-span-5"
             data-reveal
           >
             Three core product families, one standard. Each is rolled, cooled and verified on the
@@ -53,7 +53,10 @@ export function Products() {
           </p>
         </div>
 
-        <div className="mt-[clamp(3rem,8vh,6rem)] grid gap-px bg-[color:var(--border)] md:grid-cols-3" data-stagger>
+        <div
+          className="mt-[clamp(3rem,8vh,6rem)] grid gap-px bg-[color:var(--border)] md:grid-cols-3"
+          data-stagger
+        >
           {PRODUCTS.map((p) => (
             <article key={p.name} className="product-card flex flex-col bg-[#08080a]">
               <div className="relative aspect-4/5 overflow-hidden" data-reveal="image">
@@ -65,13 +68,15 @@ export function Products() {
                   height={1280}
                   className="h-full w-full object-cover grayscale"
                 />
-                <span className="absolute left-5 top-5 text-[0.65rem] tracking-[0.4em] text-[color:var(--steel)]">
+                <span className="absolute left-5 top-5 text-[12px] tracking-[0.4em] text-[color:var(--brand)]">
                   {p.index}
                 </span>
               </div>
               <div className="flex flex-1 flex-col p-7">
                 <h3 className="display text-[clamp(1.4rem,2.2vw,2rem)]">{p.name}</h3>
-                <p className="mt-4 text-sm leading-relaxed text-[color:var(--steel-dim)]">{p.copy}</p>
+                <p className="mt-4 text-xl leading-relaxed text-[color:var(--steel-dim)]">
+                  {p.copy}
+                </p>
                 <ul className="mt-7 space-y-2 border-t border-[color:var(--border)] pt-5">
                   {p.specs.map((s) => (
                     <li

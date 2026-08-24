@@ -1,76 +1,141 @@
-const NAV = ["Home", "About", "Products", "Quality", "Contact"];
-const SOCIAL = ["LinkedIn", "Facebook", "YouTube"];
+import { ArrowRight, Download, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import logo from "@/assets/logo/julfikar-logo.png";
+
+const USEFUL_LINKS = [
+  [
+    { label: "About Us", href: "#about" },
+    { label: "Products", href: "#products" },
+    { label: "Case Studies", href: "#manufacturing" },
+  ],
+  [
+    { label: "Blog", href: "#" },
+    { label: "FAQs", href: "#" },
+    { label: "Contact Us", href: "#contact" },
+  ],
+  [
+    { label: "Services", href: "#manufacturing" },
+    { label: "Industries", href: "#products" },
+    { label: "Pricing & Plans", href: "#" },
+  ],
+];
+
+const SOCIAL = [
+  { label: "Facebook", href: "#contact", Icon: Facebook },
+  { label: "Twitter", href: "#contact", Icon: Twitter },
+  { label: "Instagram", href: "#contact", Icon: Instagram },
+  { label: "LinkedIn", href: "#contact", Icon: Linkedin },
+];
 
 export function SiteFooter() {
   return (
-    <footer
-      id="contact"
-      className="relative border-t border-[color:var(--border)] bg-[#040405] pt-[clamp(4rem,12vh,8rem)]"
-    >
-      <div className="shell">
-        <div className="grid gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <h2 className="display text-[clamp(1.8rem,3.4vw,3rem)]" data-reveal="mask">
-              Julfikar Steel
-              <br />
-              Re-Rolling Mills Ltd.
-            </h2>
-            <p className="mt-6 max-w-sm text-sm leading-relaxed text-[color:var(--steel-dim)]">
-              Reinforcement, structural and industrial steel — engineered to endure.
-            </p>
-          </div>
-
-          <nav className="lg:col-span-3" aria-label="Footer">
-            <p className="eyebrow">Navigate</p>
-            <ul className="mt-6 space-y-3">
-              {NAV.map((item) => (
-                <li key={item}>
-                  <a
-                    href={`#${item.toLowerCase()}`}
-                    className="text-sm text-[color:var(--steel)] transition-colors hover:text-foreground"
-                  >
-                    {item}
+    <footer id="contact" className="footer-style-two">
+      <div className="footer-widget-section">
+        <div className="footer-outer">
+          <span className="footer-big-text" aria-hidden="true">
+            Julfikar
+          </span>
+          <div className="shell relative z-10">
+            <div className="grid gap-12 lg:grid-cols-2">
+              <div className="footer-logo-widget">
+                <div className="footer-logo">
+                  <img
+                    src={logo}
+                    alt="Julfikar Steel Re-Rolling Mills Ltd."
+                    className="h-auto max-w-[180px]"
+                  />
+                </div>
+                <div className="footer-phone">
+                  <a href="tel:+8801325070143">+880 1325 070 143</a>
+                </div>
+                <p>B-342, Enayetnagar, Godnail, Siddhirganj, Narayanganj, Bangladesh.</p>
+                <h4>Let us know your thoughts.</h4>
+                <div className="footer-line-link">
+                  <a href="#contact">
+                    <ArrowRight aria-hidden="true" />
+                    <span>Drop a Line</span>
                   </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+                </div>
+              </div>
 
-          <div className="lg:col-span-2">
-            <p className="eyebrow">Contact</p>
-            <ul className="mt-6 space-y-3 text-sm text-[color:var(--steel)]">
-              <li>Mill Office, Dhaka, Bangladesh</li>
-              <li>+880 0000 000000</li>
-              <li>info@julfikarsteel.com</li>
-            </ul>
-          </div>
+              <div className="footer-links-widget">
+                <div className="footer-title">
+                  <h3>Social Connect</h3>
+                </div>
+                <div className="footer-social-box">
+                  <ul className="footer-social-links">
+                    {SOCIAL.map(({ label, href, Icon }) => (
+                      <li key={label}>
+                        <a href={href} aria-label={label}>
+                          <Icon aria-hidden="true" />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="footer-download-box">
+                    <div className="footer-download-icon">
+                      <Download aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h4>Product Catalogue</h4>
+                      <button type="button">Download</button>
+                    </div>
+                  </div>
+                </div>
 
-          <div className="lg:col-span-2">
-            <p className="eyebrow">Follow</p>
-            <ul className="mt-6 space-y-3">
-              {SOCIAL.map((s) => (
-                <li key={s}>
-                  <a
-                    href="#contact"
-                    className="text-sm text-[color:var(--steel)] transition-colors hover:text-foreground"
-                  >
-                    {s}
-                  </a>
-                </li>
-              ))}
-            </ul>
+                <div className="footer-title">
+                  <h3>Useful Links</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+                  {USEFUL_LINKS.map((column) => (
+                    <ul key={column[0]?.label} className="footer-links-list">
+                      {column.map((link) => (
+                        <li key={link.label}>
+                          <a href={link.href}>{link.label}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div className="mt-[clamp(3rem,8vh,6rem)] flex flex-col gap-4 border-t border-[color:var(--border)] py-8 text-[0.68rem] uppercase tracking-[0.22em] text-[color:var(--steel-dim)] md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} Julfikar Steel Re-Rolling Mills Ltd.</p>
-          <div className="flex gap-8">
-            <a href="#contact" className="transition-colors hover:text-foreground">
-              Privacy Policy
-            </a>
-            <a href="#contact" className="transition-colors hover:text-foreground">
-              Terms &amp; Conditions
-            </a>
+      <div className="footer-bottom">
+        <div className="shell">
+          <div className="footer-bottom-inner">
+            <div className="footer-copyright">
+              <p>
+                <a
+                  href="https://cubixbd.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5"
+                >
+                  &copy; {new Date().getFullYear()}
+                  <img src="/favicon.ico" alt="Cubix Technology" className="inline h-4 w-4" />
+                  Cubix Technology Ltd.
+                </a>
+              </p>
+            </div>
+            <ul className="footer-nav">
+              <li>
+                <a href="#">Privacy Policy</a>
+              </li>
+              <li>.</li>
+              <li>
+                <a href="#">Legal Notice</a>
+              </li>
+              <li>.</li>
+              <li>
+                <a href="#">Terms &amp; Conditions</a>
+              </li>
+              <li>.</li>
+              <li>
+                <a href="#">Refund Policy</a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
