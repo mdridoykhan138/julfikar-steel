@@ -53,20 +53,35 @@ export function initReveals(root: HTMLElement) {
       }
 
       if (kind === "image") {
+        const inner = el.querySelector("img");
         gsap.fromTo(
           el,
-          { clipPath: "inset(100% 0 0 0)", scale: 1.12 },
+          { clipPath: "inset(100% 0 0 0)" },
           {
             clipPath: "inset(0% 0 0 0)",
-            scale: 1,
             duration: 1.3,
             delay,
             ease: "power3.out",
             scrollTrigger: { trigger: el, start: "top 88%" },
           },
         );
+        if (inner) {
+          gsap.fromTo(
+            inner,
+            { scale: 1.16 },
+            {
+              scale: 1,
+              duration: 1.5,
+              delay,
+              ease: "power3.out",
+              scrollTrigger: { trigger: el, start: "top 88%" },
+            },
+          );
+        }
         return;
       }
+
+
 
       gsap.fromTo(
         el,
