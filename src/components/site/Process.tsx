@@ -1,5 +1,10 @@
 import { useEffect, useRef } from "react";
+import type { ScrollTrigger } from "gsap/ScrollTrigger";
 import millLine from "@/assets/mill-line.jpg";
+import industrial from "@/assets/product-industrial.jpg";
+import structural from "@/assets/product-structural.jpg";
+import rebar from "@/assets/product-rebar.jpg";
+import heroPoster from "@/assets/hero-poster.jpg";
 import { prefersReducedMotion, getGsap } from "@/lib/reveal";
 
 const STEPS = [
@@ -7,50 +12,96 @@ const STEPS = [
     n: "01",
     title: "Raw Material",
     copy: "Billet sourced and verified for chemistry before it enters the furnace.",
+    image: millLine,
   },
   {
     n: "02",
     title: "Processing",
     copy: "Reheating under controlled temperature for uniform grain structure.",
+    image: industrial,
   },
   {
     n: "03",
     title: "Rolling",
     copy: "Sequential stands reduce section to exact dimensional tolerance.",
+    image: structural,
   },
   {
     n: "04",
     title: "Quality Control",
     copy: "Tensile, bend and dimensional testing on sampled production.",
+    image: rebar,
   },
   {
     n: "05",
     title: "Finished Steel",
     copy: "Cut, bundled, tagged and dispatched with mill test certification.",
+    image: heroPoster,
   },
 ];
 
+const TOTAL = String(STEPS.length).padStart(2, "0");
+
 export function Process() {
   const rootRef = useRef<HTMLElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const railTrackRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<ScrollTrigger | null>(null);
+
+  const handleRailClick = (index: number) => {
+    const st = triggerRef.current;
+    if (!st) return;
+    const ratio = STEPS.length > 1 ? index / (STEPS.length - 1) : 0;
+    const start = typeof st.start === "number" ? st.start : 0;
+    const end = typeof st.end === "number" ? st.end : start;
+    window.scrollTo({ top: start + ratio * (end - start), behavior: "smooth" });
+  };
 
   useEffect(() => {
     const root = rootRef.current;
-    const line = lineRef.current;
-    if (!root || !line || prefersReducedMotion()) return;
-    const { gsap } = getGsap();
+    const pin = pinRef.current;
+    const track = trackRef.current;
+    const railTrack = railTrackRef.current;
+    if (!root || !pin || !track || !railTrack) return;
+    if (prefersReducedMotion()) return;
+
+    const { gsap, ScrollTrigger } = getGsap();
+    const distance = () => Math.max(0, track.scrollWidth - track.clientWidth);
+    const railItemHeight = 60;
+    const railItems = Array.from(railTrack.querySelectorAll<HTMLElement>(".process-rail-item"));
+
+    railItems.forEach((item, i) => {
+      item.style.transform = `translateY(${i * railItemHeight}px)`;
+      item.classList.toggle("is-active", i === 0);
+    });
+
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        line,
-        { scaleX: 0 },
-        {
-          scaleX: 1,
-          ease: "none",
-          scrollTrigger: { trigger: line, start: "top 85%", end: "bottom 40%", scrub: true },
+      const tween = gsap.to(track, { x: () => -distance(), ease: "none" });
+      triggerRef.current = ScrollTrigger.create({
+        trigger: pin,
+        animation: tween,
+        start: "center center",
+        end: () => "+=" + distance(),
+        scrub: 1,
+        pin: true,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const activeFloat = self.progress * (STEPS.length - 1);
+          const activeIndex = Math.round(activeFloat);
+          railItems.forEach((item, i) => {
+            item.style.transform = `translateY(${(i - activeFloat) * railItemHeight}px)`;
+            item.classList.toggle("is-active", i === activeIndex);
+          });
         },
-      );
+      });
     }, root);
-    return () => ctx.revert();
+
+    ScrollTrigger.refresh();
+    return () => {
+      triggerRef.current = null;
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -66,64 +117,64 @@ export function Process() {
         </div>
 
         <div className="mt-14 grid gap-10 lg:grid-cols-12 lg:items-end">
-          <h2 className="display display-lg lg:col-span-6" data-reveal="mask">
+          <h2 className="display display-lg lg:col-span-7" data-reveal="mask">
             Precision in
             <br />
             every ton.
           </h2>
           <p
-            className="text-xl leading-relaxed text-[color:var(--steel)] lg:col-span-4"
+            className="text-xl leading-relaxed text-[color:var(--steel)] lg:col-span-5"
             data-reveal
           >
             Advanced rolling equipment, instrumented process control and documented inspection keep
             output consistent — batch to batch, shipment to shipment.
           </p>
-          <p
-            className="text-xl leading-relaxed text-[color:var(--steel-dim)] lg:col-span-2"
-            data-reveal
-            data-reveal-delay="0.1"
-          >
-            Strength, ductility and dimension are engineered, not assumed.
-          </p>
         </div>
+      </div>
 
-        <div
-          className="relative mt-[clamp(3rem,8vh,5rem)] aspect-21/9 overflow-hidden border border-[color:var(--border)]"
-          data-reveal="image"
-        >
-          <img
-            src={millLine}
-            alt="Hot billet passing through the rolling line at Julfikar Steel"
-            loading="lazy"
-            width={1920}
-            height={1080}
-            className="h-full w-full object-cover"
-            data-parallax="30"
-          />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(4,4,5,0.75),transparent_60%)]" />
-        </div>
-
-        <div id="quality" className="mt-[clamp(4rem,10vh,7rem)]">
-          <div className="relative h-px w-full bg-[color:var(--border)]">
-            <div
-              ref={lineRef}
-              className="process-line absolute inset-0 bg-[color:var(--steel)]"
-              style={{ transform: "scaleX(0)" }}
-            />
-          </div>
-          <div className="grid gap-px md:grid-cols-5" data-stagger>
+      <div id="quality" ref={pinRef} className="relative mt-[clamp(3rem,8vh,6rem)]">
+        <div className="process-cinema">
+          <div ref={trackRef} className="flex h-full">
             {STEPS.map((s) => (
-              <div key={s.n} className="pt-8 md:pr-6">
-                <span className="text-[12px] tracking-[0.4em] text-[color:var(--brand)]">
-                  {s.n}
-                </span>
-                <h3 className="display mt-4 text-[clamp(1.15rem,1.6vw,1.5rem)]">{s.title}</h3>
-                <p className="mt-3 text-xl leading-relaxed text-[color:var(--steel-dim)]">
-                  {s.copy}
-                </p>
-              </div>
+              <article key={s.n} className="process-project">
+                <div className="process-project-frame">
+                  <img
+                    src={s.image}
+                    alt={`${s.title} — Julfikar Steel manufacturing`}
+                    loading="lazy"
+                  />
+                </div>
+                <div className="process-project-meta">
+                  <div>
+                    <span className="process-project-num">
+                      {s.n} / {TOTAL}
+                    </span>
+                  </div>
+                  <h3 className="process-project-title">{s.title}</h3>
+                  <p className="process-project-copy">{s.copy}</p>
+                </div>
+              </article>
             ))}
           </div>
+
+          <nav className="process-rail" aria-label="Process steps">
+            <div ref={railTrackRef} className="process-rail-track">
+              {STEPS.map((s, i) => (
+                <button
+                  key={s.n}
+                  type="button"
+                  className="process-rail-item"
+                  onClick={() => handleRailClick(i)}
+                  aria-label={`Go to step ${s.n} — ${s.title}`}
+                >
+                  <span className="process-rail-thumb">
+                    <img src={s.image} alt="" />
+                  </span>
+                  <span className="process-rail-index">{s.n}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
         </div>
       </div>
     </section>

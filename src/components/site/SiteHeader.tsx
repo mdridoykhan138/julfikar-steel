@@ -18,7 +18,6 @@ const NAV: NavItem[] = [
     children: [
       { label: "Home", to: "/" },
       { label: "Home2", to: "/home2" },
-      { label: "Home3", to: "/home3" },
     ],
   },
   { label: "About", href: "#about" },
