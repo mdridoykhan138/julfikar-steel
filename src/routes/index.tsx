@@ -5,6 +5,7 @@ import { Hero } from "@/components/site/Hero";
 import { About } from "@/components/site/About";
 import { Products } from "@/components/site/Products";
 import { Process } from "@/components/site/Process";
+import { Clients } from "@/components/site/Clients";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ScrollToTop } from "@/components/site/ScrollToTop";
 import { Preloader } from "@/components/site/Preloader";
@@ -60,6 +61,7 @@ function Index() {
         <About />
         <Products />
         <Process />
+        <Clients />
       </main>
       <SiteFooter />
       <ScrollToTop />
