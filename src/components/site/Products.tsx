@@ -38,7 +38,7 @@ export function Products() {
           <span className="rule hidden flex-1 md:block" />
         </div>
 
-        <div className="mt-14 grid gap-10 lg:grid-cols-12 lg:items-end">
+        <div className="mt-14 grid gap-10 lg:grid-cols-12 lg:items-start">
           <h2 className="display display-lg lg:col-span-7" data-reveal="mask">
             Steel that
             <br />

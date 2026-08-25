@@ -42,7 +42,7 @@ type MatterMouse = Matter.Mouse & {
   mousewheel: EventListener;
 };
 
-export function Clients() {
+export function Clients({ section = "04" }: { section?: string }) {
   const boxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -234,11 +234,11 @@ export function Clients() {
     >
       <div className="shell">
         <div className="flex items-center gap-4">
-          <span className="eyebrow">Section 04 — Our Clients</span>
+          <span className="eyebrow">Section {section} — Our Clients</span>
           <span className="rule hidden flex-1 md:block" />
         </div>
 
-        <div className="mt-14 grid gap-10 lg:grid-cols-12 lg:items-end">
+        <div className="mt-14 grid gap-10 lg:grid-cols-12 lg:items-start">
           <h2 className="display display-lg lg:col-span-7" data-reveal="mask">
             Trusted by the
             <br />

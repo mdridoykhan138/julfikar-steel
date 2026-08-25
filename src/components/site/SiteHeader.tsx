@@ -20,7 +20,7 @@ const NAV: NavItem[] = [
       { label: "Home2", to: "/home2" },
     ],
   },
-  { label: "About", href: "#about" },
+  { label: "About", to: "/about" },
   { label: "Products", href: "#products" },
   { label: "Manufacturing", href: "#manufacturing" },
   { label: "Quality", href: "#quality" },

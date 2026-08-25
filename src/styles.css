@@ -162,7 +162,6 @@
   font-family: var(--text-font);
   font-size: 14px;
   letter-spacing: 0.42em;
-  text-transform: uppercase;
   color: var(--brand);
 }
 
@@ -783,6 +782,33 @@
     opacity: 1;
     transform: rotateY(0deg);
   }
+}
+
+@keyframes jf-play-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+}
+
+.play-btn {
+  cursor: pointer;
+}
+
+.play-btn::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  border: 2px solid var(--foreground);
+  animation: jf-play-pulse 2s ease-out infinite;
 }
 
 @media (max-width: 767px) {
