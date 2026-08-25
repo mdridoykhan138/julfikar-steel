@@ -4,7 +4,7 @@ import logo from "@/assets/logo/julfikar-logo.png";
 const USEFUL_LINKS = [
   [
     { label: "About Us", href: "/about" },
-    { label: "Products", href: "#products" },
+    { label: "Products", href: "/products" },
     { label: "Case Studies", href: "#manufacturing" },
   ],
   [

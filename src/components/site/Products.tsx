@@ -24,9 +24,31 @@ const PRODUCTS = [
     copy: "Flats, plates and coil stock supplied to fabricators and heavy engineering with consistent surface and chemistry.",
     specs: ["Flat & plate", "Controlled chemistry", "Bulk supply"],
   },
+  {
+    index: "04",
+    name: "Steel Billets",
+    image: rebar,
+    copy: "Low and medium carbon steel billets manufactured to national and international standards for re-rolling feedstock.",
+    specs: ["100mm x 100mm", "Controlled chemistry", "ISI marked"],
+  },
+  {
+    index: "05",
+    name: "TMT Bars",
+    image: structural,
+    copy: "Thermo-mechanically treated bars with superior tensile strength, ductility and corrosion resistance for seismic zones.",
+    specs: ["TMT 500W", "8mm – 32mm", "BSTI certified"],
+  },
+  {
+    index: "06",
+    name: "Wire Rod",
+    image: industrial,
+    copy: "Hot rolled wire rod coils in various diameters for downstream drawing, mesh making and fastener production.",
+    specs: ["5.5mm – 12mm", "Low carbon", "Coil packed"],
+  },
 ];
 
-export function Products() {
+export function Products({ full = false }: { full?: boolean }) {
+  const items = full ? PRODUCTS : PRODUCTS.slice(0, 3);
   return (
     <section
       id="products"
@@ -53,8 +75,11 @@ export function Products() {
           </p>
         </div>
 
-        <div className="mt-[clamp(3rem,8vh,6rem)] grid gap-px md:grid-cols-3" data-stagger>
-          {PRODUCTS.map((p) => (
+        <div
+          className={`mt-[clamp(3rem,8vh,6rem)] grid gap-px ${full ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-3"}`}
+          data-stagger
+        >
+          {items.map((p) => (
             <article key={p.name} className="product-card flex flex-col bg-[#130f15]">
               <div className="relative overflow-hidden" data-reveal="image">
                 <img

@@ -21,9 +21,9 @@ const NAV: NavItem[] = [
     ],
   },
   { label: "About", to: "/about" },
-  { label: "Products", href: "#products" },
-  { label: "Manufacturing", href: "#manufacturing" },
-  { label: "Quality", href: "#quality" },
+  { label: "Products", to: "/products" },
+  // { label: "Manufacturing", href: "#manufacturing" },
+  // { label: "Quality", href: "#quality" },
   { label: "Contact", href: "#contact" },
 ];
 
