@@ -6,7 +6,7 @@
 
 /*
  * Julfikar Steel Re-Rolling Mills Ltd. — design system
- * Brand: #040405 (primary near-black), #130F15 (black), #F6F5F5 (soft white)
+ * Brand: #130f15 (primary near-black), #130F15 (black), #F6F5F5 (soft white)
  * Everything else is a derived steel gray. No other hues.
  */
 
@@ -46,14 +46,15 @@
 
 :root {
   --radius: 0px;
-  --background: #040405;
+  /* --background: #130f15; */
+  --background: #130f15;
   --foreground: #f6f5f5;
   --card: #0a0a0c;
   --card-foreground: #f6f5f5;
   --popover: #0a0a0c;
   --popover-foreground: #f6f5f5;
   --primary: #f6f5f5;
-  --primary-foreground: #040405;
+  --primary-foreground: #130f15;
   --secondary: #130f15;
   --secondary-foreground: #f6f5f5;
   --muted: #130f15;
@@ -189,49 +190,45 @@
   border: 1px solid var(--border);
 }
 
-.btn-solid {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.9rem 1.6rem;
-  background: var(--foreground);
-  color: var(--background);
-  font-family: var(--title-font);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  transition:
-    background 0.35s ease,
-    color 0.35s ease,
-    transform 0.35s ease;
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    border: unset;
+    color: #212121;
+    z-index: 1;
+    background: var(--foreground);
+    position: relative;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 250ms;
+    overflow: hidden;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
 }
 
-.btn-solid:hover {
-  background: var(--steel);
-  transform: translateY(-1px);
+.btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    background-color: var(--brand);
+    z-index: -1;
+    transition: all 250ms;
 }
 
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.9rem 1.6rem;
-  border: 1px solid var(--input);
-  color: var(--foreground);
-  font-family: var(--title-font);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  transition:
-    border-color 0.35s ease,
-    background 0.35s ease;
+.btn:hover {
+  color: #e8e8e8;
 }
 
-.btn-ghost:hover {
-  border-color: var(--foreground);
-  background: rgba(246, 245, 245, 0.06);
+.btn:hover::before {
+  width: 100%;
 }
 
 /* Header */
@@ -315,7 +312,7 @@
 
 .nav-submenu-panel {
   min-width: 12rem;
-  background: #040405;
+  background: #130f15;
   border: 1px solid var(--border);
   padding: 0.5rem;
   display: flex;
@@ -393,7 +390,7 @@
   position: relative;
   overflow: hidden;
   border: 1px solid var(--border);
-  background: #08080a;
+  background: #130f15;
 }
 
 .product-card img {
@@ -421,7 +418,8 @@
     scroll-behavior: auto;
   }
   .product-card img,
-  .btn-solid,
+  .btn,
+  .btn::before,
   .nav-link::after {
     transition: none !important;
   }

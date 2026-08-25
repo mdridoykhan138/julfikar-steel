@@ -30,7 +30,7 @@ export function Products() {
   return (
     <section
       id="products"
-      className="relative border-t border-[color:var(--border)] bg-[#08080a] py-[clamp(6rem,16vh,12rem)]"
+      className="relative border-t border-[color:var(--border)] bg-[#130f15] py-[clamp(6rem,16vh,12rem)]"
     >
       <div className="shell">
         <div className="flex items-center gap-4">
@@ -58,7 +58,7 @@ export function Products() {
           data-stagger
         >
           {PRODUCTS.map((p) => (
-            <article key={p.name} className="product-card flex flex-col bg-[#08080a]">
+            <article key={p.name} className="product-card flex flex-col bg-[#130f15]">
               <div className="relative aspect-4/5 overflow-hidden" data-reveal="image">
                 <img
                   src={p.image}

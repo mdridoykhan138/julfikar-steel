@@ -46,7 +46,7 @@ export function About() {
               heated, rolled and verified under controlled conditions so that every bar leaving the
               line performs exactly as specified — in the lab, on site, and for decades after.
             </p>
-            <a href="#manufacturing" className="btn-ghost" data-reveal data-reveal-delay="0.15">
+            <a href="#manufacturing" className="btn" data-reveal data-reveal-delay="0.15">
               Inside the Mill
             </a>
           </div>

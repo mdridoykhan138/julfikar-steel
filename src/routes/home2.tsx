@@ -8,7 +8,7 @@ import { Process } from "@/components/site/Process";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ScrollToTop } from "@/components/site/ScrollToTop";
 import { Preloader } from "@/components/site/Preloader";
-import videoSrc from "@/assets/video/zulfiqar-steel2.mp4";
+import videoSrc from "@/assets/video/zulfiqar-steel1.mp4";
 import { useHeroPreload } from "@/lib/use-hero-preload";
 import { initReveals } from "@/lib/reveal";
 

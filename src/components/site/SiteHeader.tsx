@@ -135,7 +135,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-3">
           <div className="hidden md:block" data-header-item>
-            <a href="#contact" className="btn-solid">
+            <a href="#contact" className="btn">
               Get in Touch
             </a>
           </div>
@@ -214,7 +214,7 @@ export function SiteHeader() {
               );
             })}
           </nav>
-          <a href="#contact" className="btn-solid justify-center" onClick={() => setOpen(false)}>
+          <a href="#contact" className="btn" onClick={() => setOpen(false)}>
             Get in Touch
           </a>
         </div>

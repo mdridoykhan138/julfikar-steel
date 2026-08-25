@@ -207,10 +207,10 @@ export function Hero({ videoSrc, active, preloadFailed = false, onReady }: Props
                 proven ton after ton.
               </p>
               <div className="flex items-center gap-4" data-hero-cta>
-                <a href="#products" className="btn-solid">
+                <a href="#products" className="btn">
                   Explore Steel
                 </a>
-                <a href="#contact" className="btn-ghost">
+                <a href="#contact" className="btn">
                   Get in Touch
                 </a>
               </div>
