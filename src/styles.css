@@ -394,8 +394,9 @@
 }
 
 .product-card img {
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+    height: 300px;
 }
 
 .product-card:hover img {

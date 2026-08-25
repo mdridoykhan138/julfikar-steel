@@ -53,13 +53,10 @@ export function Products() {
           </p>
         </div>
 
-        <div
-          className="mt-[clamp(3rem,8vh,6rem)] grid gap-px bg-[color:var(--border)] md:grid-cols-3"
-          data-stagger
-        >
+        <div className="mt-[clamp(3rem,8vh,6rem)] grid gap-px md:grid-cols-3" data-stagger>
           {PRODUCTS.map((p) => (
             <article key={p.name} className="product-card flex flex-col bg-[#130f15]">
-              <div className="relative aspect-4/5 overflow-hidden" data-reveal="image">
+              <div className="relative overflow-hidden" data-reveal="image">
                 <img
                   src={p.image}
                   alt={`${p.name} produced by Julfikar Steel Re-Rolling Mills Ltd.`}
@@ -77,7 +74,7 @@ export function Products() {
                 <p className="mt-4 text-xl leading-relaxed text-[color:var(--steel-dim)]">
                   {p.copy}
                 </p>
-                <ul className="mt-7 space-y-2 border-t border-[color:var(--border)] pt-5">
+                {/* <ul className="mt-7 space-y-2 border-t border-[color:var(--border)] pt-5">
                   {p.specs.map((s) => (
                     <li
                       key={s}
@@ -86,7 +83,7 @@ export function Products() {
                       {s}
                     </li>
                   ))}
-                </ul>
+                </ul> */}
               </div>
             </article>
           ))}
